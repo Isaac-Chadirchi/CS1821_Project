@@ -1,0 +1,3 @@
+REquirements of the project
+Design the lego robot structure
+Structure of the code
