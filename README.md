@@ -1,7 +1,7 @@
 # CS1821_Project
 
  REQUIREMENTS:
- - Behaviors: 4 modes - Finding a gap, and mesauring
+ - Behaviors: 4 modes- Finding a gap, and mesauring
                       - Placing bridge
                       - Driving over bridge
                       - picking up bridge
