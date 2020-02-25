@@ -84,19 +84,18 @@ class Trundle implements Behavior {
 }
 
 
-//Needs full rewrite
+//Still needs work, doesnt actaully do anything yet just has correct imports so it can
 class GapSense implements Behavior {
-	private MovePilot turner;
-	private EV3UltrasonicSensor ultSS;
-	private SampleProvider sp = ultSS.getDistanceMode();
-	private BaseRegulatedMotor motorUltraSS;
+	private MovePilot pilot;
+	private EV3TouchSensor touchLeft;
+	private EV3TouchSensor touchRight;
 	
 	private float[] samples = new float[1];
 
-	GapSense(MovePilot p, EV3UltrasonicSensor ultraSS, BaseRegulatedMotor motorUSS) {
-		this.turner = p;
-		this.ultSS = ultraSS;
-		this.motorUltraSS = motorUSS;
+	GapSense(MovePilot p, EV3TouchSensor tL, EV3TouchSensor tR) {
+		this.pilot = p;
+		this.touchLeft = tL;
+		this.touchRight = tR;
 	}
 
 	public void action() {
@@ -107,8 +106,6 @@ class GapSense implements Behavior {
 	}
 
 	public boolean takeControl() {
-		sp.fetchSample(samples, 0);
-		return (samples[0] > 0.1f);
 	}
 }
 
