@@ -1,0 +1,113 @@
+/* DECLARE TOUCH SENSORS */
+EV3TouchSensor ts1 = new EV3TouchSensor(SensorPort.S1); //RIGHT
+EV3TouchSensor ts2 = new EV3TouchSensor(SensorPort.S2); //LEFT
+
+
+/* Touch Sensor Mode (IF sample = 1 -> PRESSED) */
+SensorMode touch1 = ts1.getTouchMode();
+float[] ts1_sample = new float[1];
+
+SensorMode touch2 = ts2.getTouchMode();
+float[] ts2_sample = new float[1];
+
+
+/* USED TO CONTROL FIND_GAP BEHAVIOR*/
+boolean gap_found = false;
+
+
+class find_Gap {
+	private MovePilot pilot;
+	
+	find_Gap(MovePilot p) {
+		this.pilot = p;
+	}
+	
+	public void action() {
+		if((!(pilot.isMoving())) && gap_found == false) {
+			pilot.forward;
+		}
+	}
+	
+	public void suppress() {
+	}
+	
+	public boolean takeControl() {
+		return true;
+	}
+}
+
+
+class allign {
+	
+	allign(MovePilot p) {
+		this.pilot = p;
+	}
+	
+	public void action() {
+		touch1.fetchSample(ts1_sample, 0);
+		touch2.fetchSample(ts2_sample, 0);
+		
+		/* ALLIGN IF GAP FOUND ON THE LEFT SIDE */
+		if (ts2_sample[0] == 0) {
+			
+			while(ts2_sample[0] == 0) {
+				touch2.fetchSample(ts2_sample, 0);
+				mLeft.backward();
+			}
+			
+			while(ts1_sample[0] == 1){
+				touch1.fetchSample(ts1_sample, 0);
+				mRight.forward();
+			}
+			
+			while(ts2_sample[0] == 1){
+				touch2.fetchSample(ts2_sample, 0);
+				mLeft.forward();
+			}
+			
+			/* MOVE BACKWARD AFTER ALLIGNING */
+			pilot.backward();
+			Delay.msDelay(500);
+			break;
+		}
+		
+		
+		/* ALLIGN IF GAP FOUND ON THE RIGHT SIDE */
+		if (ts1_sample[0] == 0) {
+			
+			while(ts1_sample[0] == 0) {
+				touch1.fetchSample(ts1_sample, 0);
+				mRight.backward();
+			}
+			
+			while(ts2_sample[0] == 1){
+				touch2.fetchSample(ts2_sample, 0);
+				mLeft.forward();
+			}
+			
+			while(ts1_sample[0] == 1){
+				touch1.fetchSample(ts1_sample, 0);
+				mRight.forward();
+			}
+			
+			/* MOVE BACKWARD AFTER ALLIGNING */
+			pilot.backward();
+			Delay.msDelay(500);
+			break;
+		}
+	}
+	
+	public void suppress() {
+	}
+
+	public boolean takeControl() {
+		/* TAKE CONTROL IF GAP FOUND */
+		touch1.fetchSample(ts1_sample, 0);
+		touch1.fetchSample(ts12_sample, 0);
+		
+		/* GAP_FOUND USED TO STOP FIND_GAP BEVAHIOR */
+		if (ts1_sample[0] == 0 || ts2_sample[0] == 0) { gap_found = true; }
+		
+		return(ts1_sample[0] == 0 || ts2_sample[0] == 0);
+	}
+}
