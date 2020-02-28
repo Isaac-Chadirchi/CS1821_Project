@@ -38,12 +38,17 @@ class find_Gap {
 
 
 class allign {
+	private MovePilot pilot;
 	
 	allign(MovePilot p) {
 		this.pilot = p;
 	}
 	
 	public void action() {
+		/* GAP_FOUND USED TO STOP FIND_GAP BEVAHIOR */
+		gap_found = true;
+		
+		
 		touch1.fetchSample(ts1_sample, 0);
 		touch2.fetchSample(ts2_sample, 0);
 		
@@ -104,9 +109,6 @@ class allign {
 		/* TAKE CONTROL IF GAP FOUND */
 		touch1.fetchSample(ts1_sample, 0);
 		touch1.fetchSample(ts12_sample, 0);
-		
-		/* GAP_FOUND USED TO STOP FIND_GAP BEVAHIOR */
-		if (ts1_sample[0] == 0 || ts2_sample[0] == 0) { gap_found = true; }
 		
 		return(ts1_sample[0] == 0 || ts2_sample[0] == 0);
 	}
