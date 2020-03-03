@@ -1,14 +1,12 @@
 package CS1821_Project;
 
+import lejos.hardware.Button;
 import lejos.hardware.motor.BaseRegulatedMotor;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
-import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.robotics.SampleProvider;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
@@ -16,22 +14,20 @@ import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
-public class asd {
+public class main_ver1 {
 	
 	//Sensor Ports
-	private static EV3ColorSensor cS = new EV3ColorSensor(SensorPort.S1);
-	private static EV3TouchSensor touchLeft = new EV3TouchSensor(SensorPort.S2);
-	private static EV3TouchSensor touchRight = new EV3TouchSensor(SensorPort.S3);
+	private static EV3ColorSensor cS = new EV3ColorSensor(SensorPort.S3);
+	private static EV3TouchSensor ts1 = new EV3TouchSensor(SensorPort.S1);
+	private static EV3TouchSensor ts2 = new EV3TouchSensor(SensorPort.S2);
 	
 	//Motor Ports
 	private static BaseRegulatedMotor motorL = new EV3LargeRegulatedMotor(MotorPort.A);
 	private static BaseRegulatedMotor motorR = new EV3LargeRegulatedMotor(MotorPort.B);
-	private static BaseRegulatedMotor motorUSS = new EV3LargeRegulatedMotor(MotorPort.C);
-	private static BaseRegulatedMotor motorBridge = new EV3LargeRegulatedMotor(MotorPort.D);
 	
-	//Robot Size perams
-	final static double offset = 123;
-	final static double wheelDiam = 456;
+	//Robot Size perams (mm)
+	final static double offset = 146/2;
+	final static double wheelDiam = 41;
 	
 	public static void main(String[] args) {
 		
@@ -41,71 +37,43 @@ public class asd {
 		Chassis chas = new WheeledChassis((new Wheel[] { wRight, wLeft }), WheeledChassis.TYPE_DIFFERENTIAL);
 		MovePilot movePilot = new MovePilot(chas);
 		
-		movePilot.setLinearSpeed(200);
+		movePilot.setLinearSpeed(50);
+		
+
+		
+		boolean gap_found = false;
+		
 		
 		//Behaviour for finding gap
-		Behavior trundle = new Trundle(movePilot);
-		Behavior gapSense = new GapSense(movePilot, //Touch sensors);
-		Arbitrator ab = new Arbitrator(new Behavior[] {trundle, gapSense});
+		findGap gapFinder = new findGap(movePilot, gap_found);
+		Allign alligner = new Allign(movePilot, ts1, ts2, gap_found, motorL, motorR);
+		EStop stopper = new EStop(movePilot);
+		
+		
+		Arbitrator ab = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper});
 		ab.go();
 	}
-	
-	private static MovePilot getPilot(Port left, Port right, int wDiam, int offset) {
-		BaseRegulatedMotor mL = new EV3LargeRegulatedMotor(left);
-		Wheel wLeft = WheeledChassis.modelWheel(mL, wDiam).offset(-1 * offset);
-		BaseRegulatedMotor mR = new EV3LargeRegulatedMotor(right);
-		Wheel wRight = WheeledChassis.modelWheel(mR, wDiam).offset(offset);
-		Chassis c = new WheeledChassis((new Wheel[] { wRight, wLeft }), WheeledChassis.TYPE_DIFFERENTIAL);
-		MovePilot plt = new MovePilot(c);
-		return (plt);
-	}
-
 }
-
-class Trundle implements Behavior {
+class EStop implements Behavior {
 	private MovePilot pilot;
 
-	Trundle(MovePilot p) {
+	EStop(MovePilot p) {
 		this.pilot = p;
 	}
 
 	public void action() {
-		if (!(pilot.isMoving())) {
-			pilot.forward();
+		pilot.stop();
+	}
+
+	public void suppress() {
+	}
+
+	public boolean takeControl() {
+		if (Button.ESCAPE.isDown() ) {
+			System.exit(0);
+			return true;
+		} else {
+			return false;
 		}
 	}
-
-	public void suppress() {
-	}
-
-	public boolean takeControl() {
-		return true;
-	}
 }
-
-
-//Still needs work, doesnt actaully do anything yet just has correct imports so it can
-class GapSense implements Behavior {
-	private MovePilot pilot;
-	private EV3TouchSensor touchLeft;
-	private EV3TouchSensor touchRight;
-	
-	private float[] samples = new float[1];
-
-	GapSense(MovePilot p, EV3TouchSensor tL, EV3TouchSensor tR) {
-		this.pilot = p;
-		this.touchLeft = tL;
-		this.touchRight = tR;
-	}
-
-	public void action() {
-		
-	}
-
-	public void suppress() {
-	}
-
-	public boolean takeControl() {
-	}
-}
-
