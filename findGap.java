@@ -8,15 +8,21 @@ import lejos.utility.Delay;
 
 public class findGap implements Behavior {
 	private MovePilot pilot;
-	private boolean gap_found;
+	private EV3TouchSensor touch1;
+	private EV3TouchSensor touch2;
 	
-	findGap(MovePilot p, boolean gap_found) {
+	findGap(MovePilot p, EV3TouchSensor ts1, EV3TouchSensor ts2) {
 		this.pilot = p;
-		this.gap_found = gap_found;
+		this.touch1 = ts1;
+		this.touch2 = ts2;
 	}
 	
 	public void action() {
-		gap_found = Allign.gap_found;
+		float[] ts1_sample = new float[1];
+		float[] ts2_sample = new float[1];
+		touch1.fetchSample(ts1_sample, 0);
+		touch2.fetchSample(ts2_sample, 0);
+		boolean gap_found = (ts1_sample[0] < 0.1 || ts2_sample[0] < 0.1);
 		if((!(pilot.isMoving())) && gap_found == false) {
 			pilot.forward();
 		}
@@ -33,27 +39,26 @@ class Allign implements Behavior {
 	private MovePilot pilot;
 	private EV3TouchSensor touch1;
 	private EV3TouchSensor touch2;
-	public static boolean gap_found;
+	public boolean gap_found;
 	private BaseRegulatedMotor mLeft;
 	private BaseRegulatedMotor mRight;
 	
-	Allign(MovePilot p, EV3TouchSensor ts1, EV3TouchSensor ts2, boolean gap_found, BaseRegulatedMotor left, BaseRegulatedMotor right) {
+	Allign(MovePilot p, EV3TouchSensor ts1, EV3TouchSensor ts2, BaseRegulatedMotor left, BaseRegulatedMotor right) {
 		this.pilot = p;
 		this.touch1 = ts1;
-		this.touch2 = ts2;	
-		this.gap_found = gap_found;
+		this.touch2 = ts2;
 		this.mLeft = left;
 		this.mRight = right;
+		
+		touch1.getTouchMode();
+		touch2.getTouchMode();
 	}
 	
 	public void action() {
 		/* GAP_FOUND USED TO STOP FIND_GAP BEVAHIOR */
-		gap_found = true;
+		
 		/* Touch Sensor Mode (IF sample = 1 -> PRESSED) */
-		touch1.getTouchMode();
 		float[] ts1_sample = new float[1];
-
-		touch2.getTouchMode();
 		float[] ts2_sample = new float[1];		
 		
 		touch1.fetchSample(ts1_sample, 0);
@@ -78,13 +83,10 @@ class Allign implements Behavior {
 			}
 			
 			/* MOVE BACKWARD AFTER ALLIGNING */
-			pilot.backward();
-			Delay.msDelay(500);
-		}
-		
-		
-		/* ALLIGN IF GAP FOUND ON THE RIGHT SIDE */
-		if (ts1_sample[0] < 0.05) {
+			pilot.travel(-50);
+		}else if (ts1_sample[0] < 0.05) {
+			
+			/* ALLIGN IF GAP FOUND ON THE RIGHT SIDE */
 			
 			while(ts1_sample[0] < 0.05) {
 				touch1.fetchSample(ts1_sample, 0);
@@ -102,8 +104,7 @@ class Allign implements Behavior {
 			}
 			
 			/* MOVE BACKWARD AFTER ALLIGNING */
-			pilot.backward();
-			Delay.msDelay(500);
+			pilot.travel(-50);
 		}
 	}
 	
@@ -114,10 +115,7 @@ class Allign implements Behavior {
 		/* TAKE CONTROL IF GAP FOUND */
 		
 		/* Touch Sensor Mode (IF sample = 1 -> PRESSED) */
-		touch1.getTouchMode();
 		float[] ts1_sample = new float[1];
-
-		touch2.getTouchMode();
 		float[] ts2_sample = new float[1];
 		
 		touch1.fetchSample(ts1_sample, 0);

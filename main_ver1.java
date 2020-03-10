@@ -38,15 +38,10 @@ public class main_ver1 {
 		MovePilot movePilot = new MovePilot(chas);
 		
 		movePilot.setLinearSpeed(50);
-		
-
-		
-		boolean gap_found = false;
-		
-		
+				
 		//Behaviour for finding gap
-		findGap gapFinder = new findGap(movePilot, gap_found);
-		Allign alligner = new Allign(movePilot, ts1, ts2, gap_found, motorL, motorR);
+		findGap gapFinder = new findGap(movePilot, ts1, ts2);
+		Allign alligner = new Allign(movePilot, ts1, ts2, motorL, motorR);
 		EStop stopper = new EStop(movePilot);
 		
 		
