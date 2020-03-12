@@ -43,9 +43,10 @@ public class main_ver1 {
 		findGap gapFinder = new findGap(movePilot, ts1, ts2);
 		Allign alligner = new Allign(movePilot, ts1, ts2, motorL, motorR);
 		EStop stopper = new EStop(movePilot);
+		DriveOver driveoverbridge = new DriveOver(cS, motorL, motorR);
 		
 		
-		Arbitrator ab = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper});
+		Arbitrator ab = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper, driveoverbridge});
 		ab.go();
 	}
 }
