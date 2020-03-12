@@ -44,9 +44,10 @@ public class main_ver1 {
 		Allign alligner = new Allign(movePilot, ts1, ts2, motorL, motorR);
 		EStop stopper = new EStop(movePilot);
 		DriveOver driveoverbridge = new DriveOver(cS, motorL, motorR);
+		Backup backup = new Backup(movePilot);
 		
 		
-		Arbitrator ab = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper, driveoverbridge});
+		Arbitrator ab = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper, driveoverbridge, backup });
 		ab.go();
 	}
 }
