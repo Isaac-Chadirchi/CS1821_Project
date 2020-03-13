@@ -32,7 +32,14 @@ public class findGap implements Behavior {
 	}
 	
 	public boolean takeControl() {
-		return true;
+		float[] ts1_sample = new float[1];
+		float[] ts2_sample = new float[1];
+		touch1.fetchSample(ts1_sample, 0);
+		touch2.fetchSample(ts2_sample, 0);
+		if(!((ts1_sample[0] < 0.1 || ts2_sample[0] < 0.1))) {
+			return true;
+		}
+		return false;
 	}
 }
 class Allign implements Behavior {

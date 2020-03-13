@@ -24,6 +24,7 @@ public class main_ver1 {
 	//Motor Ports
 	private static BaseRegulatedMotor motorL = new EV3LargeRegulatedMotor(MotorPort.A);
 	private static BaseRegulatedMotor motorR = new EV3LargeRegulatedMotor(MotorPort.B);
+	private static BaseRegulatedMotor motorB = new EV3LargeRegulatedMotor(MotorPort.C);
 	
 	//Robot Size perams (mm)
 	final static double offset = 146/2;
@@ -38,6 +39,7 @@ public class main_ver1 {
 		MovePilot movePilot = new MovePilot(chas);
 		
 		movePilot.setLinearSpeed(50);
+		movePilot.setAngularSpeed(50);
 				
 		//Behaviour for finding gap
 		findGap gapFinder = new findGap(movePilot, ts1, ts2);
@@ -46,9 +48,17 @@ public class main_ver1 {
 		DriveOver driveoverbridge = new DriveOver(cS, motorL, motorR);
 		Backup backup = new Backup(movePilot);
 		
+		//Gap finder Arbitrator
+		Arbitrator ab1 = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper });
+		//ab1.go();
+		ab1.stop();
 		
-		Arbitrator ab = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper, driveoverbridge, backup });
-		ab.go();
+		//Placer and aligner Arbitrator
+		Arbitrator ab2 = new Arbitrator(new Behavior[] {stopper, driveoverbridge, backup });
+		//ab2.go();
+		ab2.stop();
+		
+		Pickup.main(movePilot, motorB, cS);
 	}
 }
 class EStop implements Behavior {

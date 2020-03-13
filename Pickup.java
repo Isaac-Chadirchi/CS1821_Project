@@ -12,17 +12,18 @@ public class Pickup {
 	public static void main(MovePilot pilot, BaseRegulatedMotor bridgeM, EV3ColorSensor cs) {
 		
 		bridgeM.setSpeed(10);
+		bridgeM.setStallThreshold(1, 50);
 		
 		while (!bridgeM.isStalled()) {
-			bridgeM.forward();
+			bridgeM.backward();
 		}
 		
 		pickupAlign(pilot, cs);
 		
-		bridgeM.backward();
+		bridgeM.forward();
 		Delay.msDelay(rotateDistanceTime);
 		
-		pilot.rotate(180);
+		pilot.rotate(360);
 	}
 	
 	private static void pickupAlign(MovePilot pilot, EV3ColorSensor cs) {
