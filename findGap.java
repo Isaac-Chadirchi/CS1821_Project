@@ -133,7 +133,7 @@ class Allign implements Behavior {
 		float[] ts2_sample = new float[1];
 		
 		touch1.fetchSample(ts1_sample, 0);
-		touch1.fetchSample(ts2_sample, 0);
+		touch2.fetchSample(ts2_sample, 0);
 		
 		return((ts1_sample[0] < 0.3 || ts2_sample[0] < 0.3)&&(!gapBool.getBooel()));
 	}

@@ -1,10 +1,7 @@
 package CS1821_Project;
 
-import java.util.Random;
-
 import lejos.hardware.motor.BaseRegulatedMotor;
 import lejos.hardware.sensor.EV3TouchSensor;
-import lejos.robotics.SampleProvider;
 import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.subsumption.Behavior;
 import lejos.utility.Delay;
