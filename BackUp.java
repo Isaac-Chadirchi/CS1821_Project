@@ -10,16 +10,19 @@ import lejos.robotics.subsumption.Behavior;
 
 class Backup implements Behavior {
 	
+	private static final int backupTravel = -50;
+	
 	private MovePilot turner;
 	private Random rgen = new Random();
-	private boolean Backedup = false;
+	public boolean Backedup = false;
 
 	Backup(MovePilot p) {
+		this.Backedup = false;
 		this.turner = p;
 	}
 
 	public void action() {
-		turner.travel(-50);
+		turner.travel(backupTravel);
 		turner.rotate((2 * rgen.nextInt(2) - 1) * 30);
 		Backedup = true;
 	}
@@ -28,6 +31,6 @@ class Backup implements Behavior {
 	}
 
 	public boolean takeControl() {
-		return (allinged || bridgePlaced);
+		return (!Backedup);
 	}
 }

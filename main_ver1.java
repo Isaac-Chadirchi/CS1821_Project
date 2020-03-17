@@ -47,16 +47,25 @@ public class main_ver1 {
 		EStop stopper = new EStop(movePilot);
 		DriveOver driveoverbridge = new DriveOver(cS, motorL, motorR);
 		Backup backup = new Backup(movePilot);
+		PlaceBridge placer = new PlaceBridge(movePilot, motorB);
+		GapMeasure gapMeasurer = new GapMeasure(movePilot, motorB, ts1, ts2, placer);
 		
 		//Gap finder Arbitrator
-		Arbitrator ab1 = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper });
-		//ab1.go();
+		Arbitrator ab1 = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper }, true);
+		ab1.go();
 		ab1.stop();
 		
-		//Placer and aligner Arbitrator
-		Arbitrator ab2 = new Arbitrator(new Behavior[] {stopper, driveoverbridge, backup });
-		//ab2.go();
+		movePilot.travel(-50);
+		
+		//placer Arbitrator
+		Arbitrator ab2 = new Arbitrator(new Behavior[] {stopper, gapMeasurer, placer }, true);
+		ab2.go();
 		ab2.stop();
+		
+		//align and drive over Arbitrator
+		Arbitrator ab3 = new Arbitrator(new Behavior[] {stopper, driveoverbridge }, true);
+		ab3.go();
+		ab3.stop();
 		
 		Pickup.main(movePilot, motorB, cS);
 	}

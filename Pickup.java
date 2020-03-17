@@ -18,6 +18,8 @@ public class Pickup {
 			bridgeM.backward();
 		}
 		
+		bridgeM.setStallThreshold(50, 1000);
+		
 		pickupAlign(pilot, cs);
 		
 		bridgeM.forward();
