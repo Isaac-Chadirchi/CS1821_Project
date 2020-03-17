@@ -40,34 +40,30 @@ public class main_ver1 {
 		
 		movePilot.setLinearSpeed(50);
 		movePilot.setAngularSpeed(50);
+		
+		motorL.setSpeed (50); 
+		motorR.setSpeed (50);
 				
+		
+		gapFoundBool gapBool = new gapFoundBool();
 		//Behaviour for finding gap
-		findGap gapFinder = new findGap(movePilot, ts1, ts2);
-		Allign alligner = new Allign(movePilot, ts1, ts2, motorL, motorR);
+		findGap gapFinder = new findGap(movePilot, ts1, ts2,  gapBool);
+		Allign alligner = new Allign(movePilot, ts1, ts2, motorL, motorR, gapBool);
 		EStop stopper = new EStop(movePilot);
 		DriveOver driveoverbridge = new DriveOver(cS, motorL, motorR);
-		Backup backup = new Backup(movePilot);
-		PlaceBridge placer = new PlaceBridge(movePilot, motorB);
-		GapMeasure gapMeasurer = new GapMeasure(movePilot, motorB, ts1, ts2, placer);
+		// Backup backup = new Backup(movePilot);
 		
 		//Gap finder Arbitrator
-		Arbitrator ab1 = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper }, true);
+		Arbitrator ab1 = new Arbitrator(new Behavior[] {alligner,  gapFinder, stopper });
 		ab1.go();
 		ab1.stop();
 		
-		movePilot.travel(-50);
+		//Placer and aligner Arbitrator
+		// Arbitrator ab2 = new Arbitrator(new Behavior[] {stopper, driveoverbridge, backup });
+		// ab2.go();
+		// ab2.stop();
 		
-		//placer Arbitrator
-		Arbitrator ab2 = new Arbitrator(new Behavior[] {stopper, gapMeasurer, placer }, true);
-		ab2.go();
-		ab2.stop();
-		
-		//align and drive over Arbitrator
-		Arbitrator ab3 = new Arbitrator(new Behavior[] {stopper, driveoverbridge }, true);
-		ab3.go();
-		ab3.stop();
-		
-		Pickup.main(movePilot, motorB, cS);
+		// Pickup.main(movePilot, motorB, cS);
 	}
 }
 class EStop implements Behavior {
