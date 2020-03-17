@@ -6,6 +6,7 @@ import lejos.hardware.motor.BaseRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.subsumption.Behavior;
+import lejos.utility.Delay;
 
 public class DriveOver implements Behavior{
 	
@@ -22,10 +23,46 @@ public class DriveOver implements Behavior{
 
 	public void action() {
 		float maxLight, minLight, avgLight;
-		maxLight = minLight = 0;
+		maxLight = 0;
+		minLight = 0.25f;
 		float[] samples1 = new float[1];
 		SampleProvider sp = cs.getRedMode();
+
+
+		sp.fetchSample(samples1, 0); //GET MAX LIGHT BEFORE CROSSING THE BRIDGE
+		maxLight = samples1[0];
 		
+		avgLight = (minLight + maxLight) / 2;
+		
+		// GET ON THE BRIDGE
+		mLeft . synchronizeWith (new BaseRegulatedMotor [] { mRight });
+		mLeft . startSynchronization ();
+		mLeft . forward ();
+		mRight . forward ();
+		mLeft . endSynchronization ();
+		Delay . msDelay (200);
+		mLeft . stop ();
+		mRight . stop ();
+		sp.fetchSample(samples1, 0);
+		
+		//CROSS THE BRIDGE
+		while(samples1[0] != (maxLight)) {
+			sp.fetchSample(samples1, 0);
+			
+			if(samples1[0] > avgLight) {
+				mRight.stop();
+				mLeft.forward();
+			}
+			if (samples1[0] < avgLight) {
+				mRight.forward();
+				mLeft.stop();
+			}
+		}		
+
+
+
+		
+		/*
 		//Light Levels Loop
 		while (!Button.ENTER.isDown()) {
 			sp.fetchSample(samples1, 0);
@@ -40,6 +77,7 @@ public class DriveOver implements Behavior{
 		
 		avgLight = (minLight + maxLight) / 2;
 		
+		
 		//Follow-Line Loop
 		while(!Button.ENTER.isDown()) {
 			sp.fetchSample(samples1, 0);
@@ -52,9 +90,8 @@ public class DriveOver implements Behavior{
 				mRight.forward();
 				mLeft.stop();
 			}
-		}
-		
-		}
+		}*/		
+	}
 	
 	
 	public void suppress() {
@@ -64,6 +101,3 @@ public class DriveOver implements Behavior{
 		return true;
 	}
 	}
-
-
-
