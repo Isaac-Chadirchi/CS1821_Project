@@ -17,6 +17,9 @@ public class findGap implements Behavior {
 		this.touch1 = ts1;
 		this.touch2 = ts2;
 		this.gapBool = gapBool;
+		this.gapBool.setBool(false);
+		touch1.getTouchMode();
+		touch2.getTouchMode();
 	}
 	
 	public void action() {
@@ -24,13 +27,13 @@ public class findGap implements Behavior {
 		float[] ts2_sample = new float[1];
 		touch1.fetchSample(ts1_sample, 0);
 		touch2.fetchSample(ts2_sample, 0);
-		boolean gap_found = (ts1_sample[0] < 0.1 || ts2_sample[0] < 0.1);
-		if((!(pilot.isMoving())) && gap_found == false) {
-			pilot.backward();
+		if(!(pilot.isMoving())) {
+			pilot.forward();
 		}
 	}
 	
 	public void suppress() {
+		pilot.stop();
 	}
 	
 	public boolean takeControl() {
@@ -38,10 +41,11 @@ public class findGap implements Behavior {
 		float[] ts2_sample = new float[1];
 		touch1.fetchSample(ts1_sample, 0);
 		touch2.fetchSample(ts2_sample, 0);
-		if(!((ts1_sample[0] < 0.1 || ts2_sample[0] < 0.1))&&(!gapBool.getBooel())) {
+		if((ts1_sample[0] == 1 && ts2_sample[0] == 1)&&(!gapBool.getBooel())) {
 			return true;
+		}else {
+			return false;
 		}
-		return false;
 	}
 }
 class Allign implements Behavior {
@@ -68,29 +72,30 @@ class Allign implements Behavior {
 	public void action() {
 		/* GAP_FOUND USED TO STOP FIND_GAP BEVAHIOR */
 		
+		pilot.stop();
+		
 		/* Touch Sensor Mode (IF sample = 1 -> PRESSED) */
 		float[] ts1_sample = new float[1];
 		float[] ts2_sample = new float[1];		
 		
 		touch1.fetchSample(ts1_sample, 0);
-		touch2.fetchSample(ts2_sample, 0);
 		
 		/* ALLIGN IF GAP FOUND ON THE LEFT SIDE */
 		if (ts2_sample[0] < 0.05) {
 			
 			while(ts2_sample[0] < 0.05) {
 				touch2.fetchSample(ts2_sample, 0);
-				mLeft.forward();
+				mLeft.backward();
 			}
 			
 			while(ts1_sample[0] > 0.5){
 				touch1.fetchSample(ts1_sample, 0);
-				mRight.backward();
+				mRight.forward();
 			}
 			
 			while(ts2_sample[0] > 0.5){
 				touch2.fetchSample(ts2_sample, 0);
-				mLeft.backward();
+				mLeft.forward();
 			}
 			
 			/* MOVE BACKWARD AFTER ALLIGNING */
@@ -101,17 +106,17 @@ class Allign implements Behavior {
 			
 			while(ts1_sample[0] < 0.05) {
 				touch1.fetchSample(ts1_sample, 0);
-				mRight.forward();
+				mRight.backward();
 			}
 			
 			while(ts2_sample[0] > 0.5){
 				touch2.fetchSample(ts2_sample, 0);
-				mLeft.backward();
+				mLeft.forward();
 			}
 			
 			while(ts1_sample[0] > 0.5){
 				touch1.fetchSample(ts1_sample, 0);
-				mRight.backward();
+				mRight.forward();
 			}
 			
 			/* MOVE BACKWARD AFTER ALLIGNING */
@@ -123,6 +128,9 @@ class Allign implements Behavior {
 	}
 	
 	public void suppress() {
+		pilot.stop();
+		mLeft.stop();
+		mRight.stop();
 	}
 
 	public boolean takeControl() {
@@ -135,6 +143,6 @@ class Allign implements Behavior {
 		touch1.fetchSample(ts1_sample, 0);
 		touch2.fetchSample(ts2_sample, 0);
 		
-		return((ts1_sample[0] < 0.3 || ts2_sample[0] < 0.3)&&(!gapBool.getBooel()));
+		return((ts1_sample[0] == 0 || ts2_sample[0] == 0)&&(!gapBool.getBooel()));
 	}
 }

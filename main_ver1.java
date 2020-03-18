@@ -1,6 +1,7 @@
 package CS1821_Project;
 
 import lejos.hardware.Button;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.BaseRegulatedMotor;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
@@ -13,6 +14,7 @@ import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
+import lejos.utility.Delay;
 
 public class main_ver1 {
 	
@@ -56,23 +58,51 @@ public class main_ver1 {
 		GapMeasure gapMeasurer = new GapMeasure(movePilot, motorB, ts1, ts2, placer);
 		
 		//Gap finder Arbitrator
-		Arbitrator ab1 = new Arbitrator(new Behavior[] {alligner,  gapFinder, stopper }, true);
+		Arbitrator ab1 = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper }, false);
 		ab1.go();
-		ab1.stop();
 		
-		movePilot.travel(-50);
+	    while(!gapBool.getBooel()){
+	    	LCD.drawString(String.valueOf(gapBool.getBooel()), 1, 1);
+	    }
 		
-		//placer Arbitrator
-		Arbitrator ab2 = new Arbitrator(new Behavior[] {stopper, gapMeasurer, placer }, true);
-		ab2.go();
-		ab2.stop();
-		
-		//align and drive over Arbitrator
-		Arbitrator ab3 = new Arbitrator(new Behavior[] {stopper, driveoverbridge }, true);
-		ab3.go();
-		ab3.stop();
-		
-		Pickup.main(movePilot, motorB, cS);
+		LCD.clear();
+		LCD.drawString("Stage 2", 1, 1);
+		Delay.msDelay(5000);
+//		
+//		ab1.stop();
+//		
+//		Delay.msDelay(5000);
+//		
+//		movePilot.travel(-50);
+//		
+//		//placer Arbitrator
+//		Arbitrator ab2 = new Arbitrator(new Behavior[] {stopper, gapMeasurer, placer }, true);
+//		ab2.go();
+//		
+//		LCD.clear();
+//		LCD.drawString("Stage 3", 1, 2);
+//		
+//		ab2.stop();
+//		
+//		Delay.msDelay(5000);
+//		
+//		//align and drive over Arbitrator
+//		Arbitrator ab3 = new Arbitrator(new Behavior[] {stopper, driveoverbridge }, true);
+//		ab3.go();
+//		
+//		LCD.clear();
+//		LCD.drawString("Stage 4", 1, 3);
+//		
+//		ab3.stop();
+//		
+//		Delay.msDelay(5000);
+//		
+//		Pickup.main(movePilot, motorB, cS);
+//		
+//		LCD.clear();
+//		LCD.drawString("Finsihed?", 1, 4);
+//		
+//		Delay.msDelay(5000);
 	}
 }
 class EStop implements Behavior {
