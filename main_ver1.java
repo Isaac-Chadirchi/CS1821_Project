@@ -57,6 +57,8 @@ public class main_ver1 {
 		PlaceBridge placer = new PlaceBridge(movePilot, motorB);
 		GapMeasure gapMeasurer = new GapMeasure(movePilot, motorB, ts1, ts2, placer);
 		
+		Button.ENTER.waitForPress();
+		
 		//Gap finder Arbitrator
 		Arbitrator ab1 = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper }, false);
 		ab1.go();
