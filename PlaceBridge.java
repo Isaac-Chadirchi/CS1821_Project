@@ -8,7 +8,7 @@ import lejos.utility.Delay;
 
 class PlaceBridge implements Behavior {
 	
-	private static final int rotatePlaceTime = 200;
+	private static final int rotatePlaceTime = 2000;
 	private static final int postRotateMoveTime = -20;
 	
 	public boolean gapToBig;	
@@ -66,7 +66,7 @@ class GapMeasure implements Behavior {
 			bridgeM.backward();
 		}
 		
-		bridgeM.setStallThreshold(50, 1000);
+		bridgeM.setStallThreshold(500,1000);
 	}
 
 	public void suppress() {

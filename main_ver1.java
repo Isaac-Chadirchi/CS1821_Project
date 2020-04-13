@@ -59,18 +59,18 @@ public class main_ver1 {
 		
 		Button.ENTER.waitForPress();
 		
-		//Gap finder Arbitrator
-		Arbitrator ab1 = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper }, false);
-		ab1.go();
-		
-	    while(!gapBool.getBooel()){
-	    	Thread.yield();
-	    	LCD.drawString(String.valueOf(gapBool.getBooel()), 1, 1);
-	    }
-		
-		LCD.clear();
-		LCD.drawString("Stage 2", 1, 1);
-		Delay.msDelay(5000);
+//		//Gap finder Arbitrator
+//		Arbitrator ab1 = new Arbitrator(new Behavior[] {gapFinder, alligner, stopper }, false);
+//		ab1.go();
+//		
+//	    while(!gapBool.getBooel()){
+//	    	Thread.yield();
+//	    	LCD.drawString(String.valueOf(gapBool.getBooel()), 1, 1);
+//	    }
+//		
+//		LCD.clear();
+//		LCD.drawString("Stage 2", 1, 1);
+//		Delay.msDelay(5000);
 //		
 //		ab1.stop();
 //		
