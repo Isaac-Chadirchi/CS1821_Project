@@ -22,11 +22,11 @@ public class DriveOver implements Behavior{
 	}
 
 	public void action() {
+		SampleProvider sp = cs.getRedMode();
 		float maxLight, minLight, avgLight;
 		maxLight = 0;
 		minLight = 0.25f;
 		float[] samples1 = new float[1];
-		SampleProvider sp = cs.getRedMode();
 
 
 		sp.fetchSample(samples1, 0); //GET MAX LIGHT BEFORE CROSSING THE BRIDGE

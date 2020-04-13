@@ -22,7 +22,6 @@ class PlaceBridge implements Behavior {
 	}
 
 	public void action() {
-		pilot.rotate(180);
 		bridgeM.setSpeed(10);
 		bridgeM.forward();
 		Delay.msDelay(rotatePlaceTime);

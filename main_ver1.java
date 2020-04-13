@@ -64,6 +64,7 @@ public class main_ver1 {
 		ab1.go();
 		
 	    while(!gapBool.getBooel()){
+	    	Thread.yield();
 	    	LCD.drawString(String.valueOf(gapBool.getBooel()), 1, 1);
 	    }
 		
